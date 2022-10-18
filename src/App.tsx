@@ -1,10 +1,20 @@
-import React from "react";
+import Container from "@mui/material/Container";
+
+import { Header } from "./components";
+import { Home, FullPost, Registration, AddPost, Login } from "./pages";
 
 function App() {
   return (
-    <div className="App">
-      <h1>h</h1>
-    </div>
+    <>
+      <Header />
+      <Container maxWidth="lg">
+        <Home />
+        {/* <FullPost /> */}
+        {/* <AddPost /> */}
+        {/* <Login /> */}
+        {/* <Registration /> */}
+      </Container>
+    </>
   );
 }
 
