@@ -55,6 +55,7 @@ export const Home: React.FC = () => {
                 commentsCount={3}
                 tags={post.tags}
                 isEditable
+                isFullPost={false}
               />
             )
           )}

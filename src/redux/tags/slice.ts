@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { StatusEnum } from "../posts/types";
 import { fetchTags } from "./asyncAction";
-import { Tag, TagsSliceState } from "./types";
+import { TagType, TagsSliceState } from "./types";
 
 const initialState: TagsSliceState = {
   tags: [],
@@ -20,7 +20,7 @@ const tagsSlice = createSlice({
     });
     builder.addCase(
       fetchTags.fulfilled,
-      (state, action: PayloadAction<Tag[]>) => {
+      (state, action: PayloadAction<TagType[]>) => {
         state.tags = action.payload;
         state.status = StatusEnum.SUCCESS;
       }

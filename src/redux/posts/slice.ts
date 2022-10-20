@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { fetchPosts } from "./asyncAction";
-import { Post, PostSliceState, StatusEnum } from "./types";
+import { PostType, PostSliceState, StatusEnum } from "./types";
 
 const initialState: PostSliceState = {
   posts: [],
@@ -19,7 +19,7 @@ const postsSlice = createSlice({
     });
     builder.addCase(
       fetchPosts.fulfilled,
-      (state, action: PayloadAction<Post[]>) => {
+      (state, action: PayloadAction<PostType[]>) => {
         state.posts = action.payload;
         state.status = StatusEnum.SUCCESS;
       }

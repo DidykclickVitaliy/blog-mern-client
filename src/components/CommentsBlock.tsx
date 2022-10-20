@@ -11,7 +11,7 @@ import Skeleton from "@mui/material/Skeleton";
 
 type CommentsBlockProps = {
   items: object[];
-  children: React.ReactNode;
+  children?: React.ReactNode;
   isLoading: boolean;
 };
 

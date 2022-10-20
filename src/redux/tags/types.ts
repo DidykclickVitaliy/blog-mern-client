@@ -1,10 +1,10 @@
 import { StatusEnum } from "../posts/types";
 
-export type Tag = {
+export type TagType = {
   tag: string;
 };
 
 export interface TagsSliceState {
-  tags: Tag[];
+  tags: TagType[];
   status: StatusEnum;
 }

@@ -3,11 +3,13 @@ import { useDispatch } from "react-redux";
 
 import posts from "./posts/slice";
 import tags from "./tags/slice";
+import auth from "./auth/slice";
 
 export const store = configureStore({
   reducer: {
     posts,
     tags,
+    auth,
   },
 });
 
