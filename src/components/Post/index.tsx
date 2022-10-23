@@ -1,4 +1,5 @@
 import React from "react";
+import { Link, useNavigate } from "react-router-dom";
 import clsx from "clsx";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Clear";
@@ -8,8 +9,9 @@ import CommentIcon from "@mui/icons-material/ChatBubbleOutlineOutlined";
 
 import styles from "./Post.module.scss";
 import { UserInfo } from "../UserInfo";
-import { Link, useParams } from "react-router-dom";
 import { UserType } from "../../redux/posts/types";
+import { useAppDispatch } from "../../redux/store";
+import { removePost } from "../../redux/posts/asyncAction";
 
 type PostProps = {
   id: string;
@@ -38,7 +40,16 @@ export const Post: React.FC<PostProps> = ({
   isFullPost,
   isEditable,
 }) => {
-  const onClickRemove = () => {};
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
+  const onClickRemove = () => {
+    if (window.confirm("Are you sure you want to delete this article?")) {
+      dispatch(removePost(id));
+
+      navigate("/");
+    }
+  };
 
   return (
     <div className={clsx(styles.root, { [styles.rootFull]: isFullPost })}>

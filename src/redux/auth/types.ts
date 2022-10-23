@@ -9,8 +9,8 @@ export enum LoginStatusEnum {
 //   fullName: string;
 //   email: string;
 //   avatarUrl: string;
-//   createdAt: Date;
-//   updatedAt: Date;
+//   createdAt: string;
+//   updatedAt: string;
 // };
 
 export interface AuthSliceState {

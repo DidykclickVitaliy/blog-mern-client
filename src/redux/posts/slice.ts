@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-import { fetchPosts } from "./asyncAction";
+import { fetchPosts, removePost } from "./asyncAction";
 import { PostType, PostSliceState, StatusEnum } from "./types";
 
 const initialState: PostSliceState = {
@@ -27,6 +27,11 @@ const postsSlice = createSlice({
     builder.addCase(fetchPosts.rejected, (state) => {
       state.posts = [];
       state.status = StatusEnum.REJECTED;
+    });
+
+    builder.addCase(removePost.fulfilled, (state, action) => {
+      state.posts = state.posts.filter((post) => post._id !== action.meta.arg);
+      state.status = StatusEnum.SUCCESS;
     });
   },
 });

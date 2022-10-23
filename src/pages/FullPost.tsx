@@ -1,15 +1,19 @@
 import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import ReactMarkdown from "react-markdown";
 
 import { Post } from "../components/Post";
 import { AddComment } from "../components/AddComment";
 import { CommentsBlock } from "../components/CommentsBlock";
 import { PostType } from "../redux/posts/types";
-import axios from "../http/axios";
+import axios from "../middleware/axios";
 import { PostSkeleton } from "../components/Post/Skeleton";
+import { selectAuth } from "../redux/auth/selectors";
+import { useAppSelector } from "../redux/store";
 
 export const FullPost = () => {
-  const [data, setData] = React.useState<PostType>();
+  const [postData, setPostData] = React.useState<PostType>();
+  const { data: userData } = useAppSelector(selectAuth);
 
   const { id } = useParams();
   const navigate = useNavigate();
@@ -18,7 +22,7 @@ export const FullPost = () => {
     axios
       .get(`/posts/${id}`)
       .then((response) => {
-        setData(response.data);
+        setPostData(response.data);
       })
       .catch((error) => {
         alert("Cannot get article");
@@ -27,25 +31,30 @@ export const FullPost = () => {
       });
   }, []);
 
-  if (!data) {
+  if (!postData) {
     return <PostSkeleton />;
   }
 
   return (
     <>
       <Post
-        id={data._id}
-        title={data.title}
-        imageUrl={data.imageUrl}
-        user={data.user}
-        createdAt={data.createdAt}
-        viewsCount={data.viewsCount}
+        id={postData._id}
+        title={postData.title}
+        imageUrl={
+          postData.imageUrl ? `http://localhost:4444${postData.imageUrl}` : ""
+        }
+        user={postData.user}
+        createdAt={postData.createdAt}
+        viewsCount={postData.viewsCount}
         commentsCount={3}
-        tags={data.tags}
-        isFullPost
-        isEditable
+        tags={postData.tags}
+        isFullPost={true}
+        isEditable={
+          // @ts-ignore
+          userData?._id === postData.user._id
+        }
       >
-        <p>{data.text}</p>
+        <ReactMarkdown children={postData.text} />
       </Post>
       <CommentsBlock
         items={[

@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
-import axios from "../../http/axios";
+import axios from "../../middleware/axios";
 import { PostType } from "./types";
 
 export const fetchPosts = createAsyncThunk("fetchPostsStatus", async () => {
@@ -8,3 +8,8 @@ export const fetchPosts = createAsyncThunk("fetchPostsStatus", async () => {
 
   return data;
 });
+
+export const removePost = createAsyncThunk<string, string>(
+  "removePostStatus",
+  async (id) => await axios.delete(`/posts/${id}`)
+);

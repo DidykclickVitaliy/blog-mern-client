@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
-import axios from "../../http/axios";
+import axios from "../../middleware/axios";
 import { TagType } from "./types";
 
 export const fetchTags = createAsyncThunk("fetchTagsStatus", async () => {

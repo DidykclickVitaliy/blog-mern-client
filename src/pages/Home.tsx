@@ -1,5 +1,4 @@
 import React from "react";
-import { useSelector } from "react-redux";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Grid from "@mui/material/Grid";
@@ -7,17 +6,20 @@ import Grid from "@mui/material/Grid";
 import { Post } from "../components/Post";
 import { TagsBlock } from "../components/TagsBlock";
 import { CommentsBlock } from "../components/CommentsBlock";
+import { PostSkeleton } from "../components/Post/Skeleton";
+
 import { selectPosts } from "../redux/posts/selectors";
-import { useAppDispatch } from "../redux/store";
+import { useAppDispatch, useAppSelector } from "../redux/store";
 import { fetchPosts } from "../redux/posts/asyncAction";
 import { fetchTags } from "../redux/tags/asyncAction";
 import { StatusEnum } from "../redux/posts/types";
-import { PostSkeleton } from "../components/Post/Skeleton";
 import { selectTags } from "../redux/tags/selectors";
+import { selectAuth } from "../redux/auth/selectors";
 
 export const Home: React.FC = () => {
-  const { posts, status: postsStatus } = useSelector(selectPosts);
-  const { tags, status: tagsStatus } = useSelector(selectTags);
+  const { posts, status: postsStatus } = useAppSelector(selectPosts);
+  const { tags, status: tagsStatus } = useAppSelector(selectTags);
+  const { data } = useAppSelector(selectAuth);
   const dispatch = useAppDispatch();
 
   const isPostLoading = postsStatus === StatusEnum.LOADIND;
@@ -48,13 +50,18 @@ export const Home: React.FC = () => {
                 key={post._id}
                 id={post._id}
                 title={post.title}
-                imageUrl={post.imageUrl}
+                imageUrl={
+                  post.imageUrl ? `http://localhost:4444${post.imageUrl}` : ""
+                }
                 user={post.user}
                 createdAt={post.createdAt}
                 viewsCount={post.viewsCount}
                 commentsCount={3}
                 tags={post.tags}
-                isEditable
+                isEditable={
+                  // @ts-ignore
+                  data?._id === post.user._id
+                }
                 isFullPost={false}
               />
             )

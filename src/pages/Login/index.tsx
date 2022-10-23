@@ -7,9 +7,8 @@ import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
 
 import styles from "./Login.module.scss";
-import { useAppDispatch } from "../../redux/store";
+import { useAppDispatch, useAppSelector } from "../../redux/store";
 import { userLogin } from "../../redux/auth/asyncAction";
-import { useSelector } from "react-redux";
 import { selectAuth } from "../../redux/auth/selectors";
 
 type InputsType = {
@@ -24,15 +23,19 @@ export const Login = () => {
     setError,
     formState: { errors, isValid },
   } = useForm<InputsType>({
-    defaultValues: { email: "test@test.om", password: "1234" },
-    mode: "onSubmit",
+    defaultValues: { email: "peter@gmail.com", password: "12345" },
+    mode: "all",
   });
 
-  const { isAuth } = useSelector(selectAuth);
+  const { isAuth } = useAppSelector(selectAuth);
   const dispatch = useAppDispatch();
 
-  const onSubmit: SubmitHandler<InputsType> = (values) => {
-    dispatch(userLogin(values));
+  const onSubmit: SubmitHandler<InputsType> = async (values) => {
+    const data = await dispatch(userLogin(values));
+
+    if (!data.payload) {
+      return alert("Failed to login");
+    }
   };
 
   if (isAuth) {
@@ -71,7 +74,13 @@ export const Login = () => {
           fullWidth
         />
 
-        <Button type="submit" size="large" variant="contained" fullWidth>
+        <Button
+          disabled={!isValid}
+          type="submit"
+          size="large"
+          variant="contained"
+          fullWidth
+        >
           Войти
         </Button>
       </form>

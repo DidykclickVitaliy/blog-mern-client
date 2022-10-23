@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-import { userLogin } from "./asyncAction";
+import { fetchAuth, registerUser, userLogin } from "./asyncAction";
 import { AuthSliceState, LoginStatusEnum } from "./types";
 
 const initialState: AuthSliceState = {
@@ -31,6 +31,38 @@ const authSlice = createSlice({
       state.status = LoginStatusEnum.LOGINED;
     });
     builder.addCase(userLogin.rejected, (state) => {
+      state.data = {};
+      state.isAuth = false;
+      state.status = LoginStatusEnum.REJECTED;
+    });
+    // rework
+    builder.addCase(registerUser.pending, (state) => {
+      state.data = {};
+      state.isAuth = false;
+      state.status = LoginStatusEnum.UNLOGINED;
+    });
+    builder.addCase(registerUser.fulfilled, (state, action) => {
+      state.data = action.payload;
+      state.isAuth = true;
+      state.status = LoginStatusEnum.LOGINED;
+    });
+    builder.addCase(registerUser.rejected, (state) => {
+      state.data = {};
+      state.isAuth = false;
+      state.status = LoginStatusEnum.REJECTED;
+    });
+
+    builder.addCase(fetchAuth.pending, (state) => {
+      state.data = {};
+      state.isAuth = false;
+      state.status = LoginStatusEnum.UNLOGINED;
+    });
+    builder.addCase(fetchAuth.fulfilled, (state, action) => {
+      state.data = action.payload;
+      state.isAuth = true;
+      state.status = LoginStatusEnum.LOGINED;
+    });
+    builder.addCase(fetchAuth.rejected, (state) => {
       state.data = {};
       state.isAuth = false;
       state.status = LoginStatusEnum.REJECTED;
