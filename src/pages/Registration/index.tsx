@@ -7,10 +7,10 @@ import Button from "@mui/material/Button";
 import Avatar from "@mui/material/Avatar";
 
 import styles from "./Login.module.scss";
-import { useAppDispatch, useAppSelector } from "../../redux/store";
-import { registerUser, userLogin } from "../../redux/auth/asyncAction";
-import { selectAuth } from "../../redux/auth/selectors";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useAppSelector } from "../../redux/store";
+import { Navigate } from "react-router-dom";
+import { userApi } from "../../redux/services/UserService";
+import { selectUserData } from "../../redux/user/selectors";
 
 type InputsType = {
   fullName: string;
@@ -18,37 +18,46 @@ type InputsType = {
   password: string;
 };
 
-export const Registration = () => {
+export const Registration: React.FC = () => {
+  const [userRegister] = userApi.useUserRegisterMutation();
+  const [userLogin] = userApi.useUserLoginMutation();
+  const { isAuth } = useAppSelector(selectUserData);
+
   const {
     register,
     handleSubmit,
     setError,
     formState: { errors, isValid },
   } = useForm<InputsType>({
-    defaultValues: { fullName: "", email: "", password: "" },
+    defaultValues: {
+      fullName: "",
+      email: "",
+      password: "",
+    },
     mode: "all",
   });
-  const dispatch = useAppDispatch();
-  const { isAuth } = useAppSelector(selectAuth);
 
   const onSubmit: SubmitHandler<InputsType> = async (values) => {
-    const data = await dispatch(registerUser(values));
-    await dispatch(
-      userLogin({
-        email: values.email,
-        password: values.password,
-      })
-    );
+    const token: string | void = await userRegister(values)
+      .unwrap()
+      .then((payload) => payload.token)
+      .catch(({ data }) => {
+        console.warn(data);
+        return alert(`Failed to register! ${data[0].msg} `);
+      });
 
-    if (!data.payload) {
-      return alert("Failed to register");
-    }
+    await userLogin({
+      email: values.email,
+      password: values.password,
+    });
+
+    token && localStorage.setItem("token", token as string);
   };
 
   if (isAuth) {
     return <Navigate to="/" />;
   }
-  // setError for validate errors from back
+
   return (
     <Paper classes={{ root: styles.root }}>
       <Typography classes={{ root: styles.title }} variant="h5">
@@ -60,9 +69,14 @@ export const Registration = () => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <TextField
           {...register("fullName", {
-            required: "Enter full name, minimum length - 4",
-            minLength: 4,
+            required: "Enter full name",
+            minLength: {
+              value: 4,
+              message:
+                "The length of the full name must be at least 4 characters",
+            },
           })}
+          placeholder="Enter your full name, please."
           className={styles.field}
           error={Boolean(errors.fullName?.message)}
           helperText={errors.fullName?.message}
@@ -70,22 +84,36 @@ export const Registration = () => {
           label="Full name"
           fullWidth
         />
+
         <TextField
           {...register("email", {
             required: "Enter a email",
-            pattern: /^\S+@\S+$/i,
+            pattern: {
+              value: /^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/,
+              message: "Please enter a valid email.",
+            },
           })}
           className={styles.field}
+          placeholder="What's your email?"
           error={Boolean(errors.email?.message)}
           helperText={errors.email?.message}
-          type="email"
+          type="text"
           label="E-Mail"
           fullWidth
         />
+
         <TextField
           {...register("password", {
             required: "Enter a password",
-            minLength: 5,
+            minLength: {
+              value: 5,
+              message: "Password must be at least 5 characters long.",
+            },
+            pattern: {
+              value: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{5,}$/,
+              message:
+                "Minimum 5 characters, at least one letter and one number",
+            },
           })}
           className={styles.field}
           type="password"
@@ -94,6 +122,7 @@ export const Registration = () => {
           label="Password"
           fullWidth
         />
+
         <Button
           disabled={!isValid}
           type="submit"
@@ -101,7 +130,7 @@ export const Registration = () => {
           variant="contained"
           fullWidth
         >
-          Зарегистрироваться
+          Register
         </Button>
       </form>
     </Paper>

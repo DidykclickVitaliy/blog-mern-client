@@ -6,7 +6,7 @@ import TextField from "@mui/material/TextField";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 
-export const AddComment = () => {
+export const AddComment: React.FC = () => {
   return (
     <>
       <div className={styles.root}>
@@ -22,7 +22,7 @@ export const AddComment = () => {
             multiline
             fullWidth
           />
-          <Button variant="contained">Отправить</Button>
+          <Button variant="contained">Send</Button>
         </div>
       </div>
     </>

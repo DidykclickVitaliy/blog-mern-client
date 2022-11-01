@@ -1,9 +1,3 @@
-export enum StatusEnum {
-  LOADIND = "loading",
-  SUCCESS = "success",
-  REJECTED = "rejected",
-}
-
 export type UserType = {
   _id: string;
   fullName: string;
@@ -25,7 +19,10 @@ export type PostType = {
   updatedAt: string;
 };
 
-export interface PostSliceState {
-  posts: PostType[];
-  status: StatusEnum;
-}
+export type PostCreateType = {
+  id?: string;
+  title: string;
+  text: string;
+  tags: string[];
+  imageUrl?: string;
+};

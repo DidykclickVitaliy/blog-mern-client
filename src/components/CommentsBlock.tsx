@@ -21,7 +21,7 @@ export const CommentsBlock: React.FC<CommentsBlockProps> = ({
   isLoading = true,
 }) => {
   return (
-    <SideBlock title="Комментарии">
+    <SideBlock title="Comments">
       <List>
         {(isLoading ? [...Array(5)] : items).map((obj, index) => (
           <React.Fragment key={index}>

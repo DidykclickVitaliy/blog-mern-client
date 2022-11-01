@@ -8,27 +8,23 @@ import { TagsBlock } from "../components/TagsBlock";
 import { CommentsBlock } from "../components/CommentsBlock";
 import { PostSkeleton } from "../components/Post/Skeleton";
 
-import { selectPosts } from "../redux/posts/selectors";
-import { useAppDispatch, useAppSelector } from "../redux/store";
-import { fetchPosts } from "../redux/posts/asyncAction";
-import { fetchTags } from "../redux/tags/asyncAction";
-import { StatusEnum } from "../redux/posts/types";
-import { selectTags } from "../redux/tags/selectors";
-import { selectAuth } from "../redux/auth/selectors";
+import { PostType } from "../redux/services/types/postTypes";
+import { postApi } from "../redux/services/PostService";
+import { userApi } from "../redux/services/UserService";
 
 export const Home: React.FC = () => {
-  const { posts, status: postsStatus } = useAppSelector(selectPosts);
-  const { tags, status: tagsStatus } = useAppSelector(selectTags);
-  const { data } = useAppSelector(selectAuth);
-  const dispatch = useAppDispatch();
+  const { data: posts, isLoading: postsLoading } =
+    postApi.useFetchAllPostsQuery(null, {
+      refetchOnMountOrArgChange: true,
+    });
 
-  const isPostLoading = postsStatus === StatusEnum.LOADIND;
-  const isTagsLoading = tagsStatus === StatusEnum.LOADIND;
-
-  React.useEffect(() => {
-    dispatch(fetchPosts());
-    dispatch(fetchTags());
-  }, []);
+  const { data: tags, isLoading: tagsLoading } = postApi.useFetchTagsQuery(
+    null,
+    {
+      refetchOnMountOrArgChange: true,
+    }
+  );
+  const { data: userData } = userApi.useFetchUserQuery(null);
 
   return (
     <>
@@ -37,13 +33,13 @@ export const Home: React.FC = () => {
         value={0}
         aria-label="basic tabs example"
       >
-        <Tab label="Новые" />
-        <Tab label="Популярные" />
+        <Tab label="New" />
+        <Tab label="Popular" />
       </Tabs>
       <Grid container spacing={4}>
         <Grid xs={8} item>
-          {(isPostLoading ? [...Array(5)] : posts).map((post, index) =>
-            isPostLoading ? (
+          {(!posts ? [...Array(5)] : posts).map((post: PostType, index) =>
+            postsLoading ? (
               <PostSkeleton key={index} />
             ) : (
               <Post
@@ -58,17 +54,14 @@ export const Home: React.FC = () => {
                 viewsCount={post.viewsCount}
                 commentsCount={3}
                 tags={post.tags}
-                isEditable={
-                  // @ts-ignore
-                  data?._id === post.user._id
-                }
+                isEditable={userData?._id === post.user._id}
                 isFullPost={false}
               />
             )
           )}
         </Grid>
         <Grid xs={4} item>
-          <TagsBlock items={tags} isLoading={isTagsLoading} />
+          <TagsBlock items={tags ? tags : []} isLoading={tagsLoading} />
           <CommentsBlock
             items={[
               {

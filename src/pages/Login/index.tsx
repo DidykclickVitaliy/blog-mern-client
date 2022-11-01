@@ -7,35 +7,40 @@ import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
 
 import styles from "./Login.module.scss";
-import { useAppDispatch, useAppSelector } from "../../redux/store";
-import { userLogin } from "../../redux/auth/asyncAction";
-import { selectAuth } from "../../redux/auth/selectors";
+import { useAppSelector } from "../../redux/store";
+import { userApi } from "../../redux/services/UserService";
+import { UserLoginType } from "../../redux/services/types/userTypes";
+import { selectUserData } from "../../redux/user/selectors";
 
-type InputsType = {
-  email: string;
-  password: string;
-};
+export const Login: React.FC = () => {
+  const [userLogin] = userApi.useUserLoginMutation();
 
-export const Login = () => {
   const {
     register,
     handleSubmit,
     setError,
     formState: { errors, isValid },
-  } = useForm<InputsType>({
-    defaultValues: { email: "peter@gmail.com", password: "12345" },
+  } = useForm<UserLoginType>({
+    defaultValues: { email: "gm@gm.gm", password: "qwerty1" },
     mode: "all",
   });
+  const { isAuth } = useAppSelector(selectUserData);
 
-  const { isAuth } = useAppSelector(selectAuth);
-  const dispatch = useAppDispatch();
+  const onSubmit: SubmitHandler<UserLoginType> = async (values) => {
+    const token: string | void = await userLogin(values)
+      .unwrap()
+      .then((payload) => payload.token)
+      .catch(({ data }) => {
+        console.warn(data);
 
-  const onSubmit: SubmitHandler<InputsType> = async (values) => {
-    const data = await dispatch(userLogin(values));
+        if (isValid && data.message) {
+          return alert(data.message);
+        }
 
-    if (!data.payload) {
-      return alert("Failed to login");
-    }
+        return alert(`Failed to login. ${data[0].msg}`);
+      });
+
+    token && localStorage.setItem("token", token as string);
   };
 
   if (isAuth) {
@@ -45,7 +50,7 @@ export const Login = () => {
   return (
     <Paper classes={{ root: styles.root }}>
       <Typography classes={{ root: styles.title }} variant="h5">
-        Вход в аккаунт
+        Sign in to your account
       </Typography>
       <form onSubmit={handleSubmit(onSubmit)}>
         <TextField
@@ -53,7 +58,10 @@ export const Login = () => {
           type="email"
           {...register("email", {
             required: "Enter a email",
-            pattern: /^\S+@\S+$/i,
+            pattern: {
+              value: /^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/,
+              message: "Please enter a valid email.",
+            },
           })}
           label="E-Mail"
           error={Boolean(errors.email?.message)}
@@ -66,7 +74,15 @@ export const Login = () => {
           type="password"
           {...register("password", {
             required: "Enter a password",
-            minLength: 5,
+            minLength: {
+              value: 5,
+              message: "Password must be at least 5 characters long.",
+            },
+            pattern: {
+              value: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{5,}$/,
+              message:
+                "Minimum 5 characters, at least one letter and one number",
+            },
           })}
           helperText={errors.password?.message}
           error={Boolean(errors.password?.message)}
@@ -81,7 +97,7 @@ export const Login = () => {
           variant="contained"
           fullWidth
         >
-          Войти
+          Login
         </Button>
       </form>
     </Paper>

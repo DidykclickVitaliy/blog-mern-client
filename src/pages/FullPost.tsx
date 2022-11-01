@@ -5,56 +5,44 @@ import ReactMarkdown from "react-markdown";
 import { Post } from "../components/Post";
 import { AddComment } from "../components/AddComment";
 import { CommentsBlock } from "../components/CommentsBlock";
-import { PostType } from "../redux/posts/types";
-import axios from "../middleware/axios";
 import { PostSkeleton } from "../components/Post/Skeleton";
-import { selectAuth } from "../redux/auth/selectors";
-import { useAppSelector } from "../redux/store";
+import { postApi } from "../redux/services/PostService";
+import { userApi } from "../redux/services/UserService";
 
-export const FullPost = () => {
-  const [postData, setPostData] = React.useState<PostType>();
-  const { data: userData } = useAppSelector(selectAuth);
-
+export const FullPost: React.FC = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { data, isLoading, error, isError } = postApi.useGetPostByIdQuery(
+    `${id}`
+  );
+  const { data: userData } = userApi.useFetchUserQuery(null);
 
-  React.useEffect(() => {
-    axios
-      .get(`/posts/${id}`)
-      .then((response) => {
-        setPostData(response.data);
-      })
-      .catch((error) => {
-        alert("Cannot get article");
-        console.log(error);
-        navigate("/");
-      });
-  }, []);
+  if (isError) {
+    alert("Cannot get article");
+    console.log(error);
 
-  if (!postData) {
+    navigate("/");
+  }
+
+  if (isLoading || !data) {
     return <PostSkeleton />;
   }
 
   return (
     <>
       <Post
-        id={postData._id}
-        title={postData.title}
-        imageUrl={
-          postData.imageUrl ? `http://localhost:4444${postData.imageUrl}` : ""
-        }
-        user={postData.user}
-        createdAt={postData.createdAt}
-        viewsCount={postData.viewsCount}
+        id={data._id}
+        title={data.title}
+        imageUrl={data.imageUrl ? `http://localhost:4444${data.imageUrl}` : ""}
+        user={data.user}
+        createdAt={data.createdAt}
+        viewsCount={data.viewsCount}
         commentsCount={3}
-        tags={postData.tags}
+        tags={data.tags}
         isFullPost={true}
-        isEditable={
-          // @ts-ignore
-          userData?._id === postData.user._id
-        }
+        isEditable={userData?._id === data.user._id}
       >
-        <ReactMarkdown children={postData.text} />
+        <ReactMarkdown children={data.text} />
       </Post>
       <CommentsBlock
         items={[

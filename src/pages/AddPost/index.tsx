@@ -1,4 +1,5 @@
 import React from "react";
+import { skipToken } from "@reduxjs/toolkit/dist/query";
 import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
 import TextField from "@mui/material/TextField";
 import Paper from "@mui/material/Paper";
@@ -7,17 +8,23 @@ import SimpleMDE, { SimpleMDEReactProps } from "react-simplemde-editor";
 
 import "easymde/dist/easymde.min.css";
 import styles from "./AddPost.module.scss";
-import { useAppSelector } from "../../redux/store";
-import { selectAuth } from "../../redux/auth/selectors";
 import axios from "../../middleware/axios";
+import { PostCreateType } from "../../redux/services/types/postTypes";
+import { postApi } from "../../redux/services/PostService";
+import { userApi } from "../../redux/services/UserService";
 
-export const AddPost = () => {
-  const { isAuth } = useAppSelector(selectAuth);
-  const navigate = useNavigate();
+export const AddPost: React.FC = () => {
   const { id: paramsId } = useParams();
+  const navigate = useNavigate();
 
-  // make it better with interface and fields state
-  const [imageUrl, setImageUrl] = React.useState<string>();
+  const { isError } = userApi.useFetchUserQuery(null);
+  const { currentData: postData } = postApi.useGetPostByIdQuery(
+    paramsId ?? skipToken
+  );
+  const [cratePost] = postApi.useCreatePostMutation();
+  const [updatePost] = postApi.useUpdatePostMutation();
+
+  const [imageUrl, setImageUrl] = React.useState<string>("");
   const [text, setText] = React.useState<string>("");
   const [title, setTitle] = React.useState<string>("");
   const [tags, setTags] = React.useState<string>("");
@@ -25,45 +32,43 @@ export const AddPost = () => {
   const isEditing = Boolean(paramsId);
 
   React.useEffect(() => {
-    if (paramsId) {
-      axios
-        .get(`/posts/${paramsId}`)
-        .then(({ data }) => {
-          // make 1 state for this  fields
-          setImageUrl(data.imageUrl);
-          setText(data.text);
-          setTitle(data.title);
-          setTags(data.tags.join(", "));
-        })
-        .catch((error) => {
-          console.warn(error);
-          alert("Failed to get article");
-        });
+    if (paramsId && postData) {
+      setImageUrl(postData.imageUrl);
+      setText(postData.text);
+      setTitle(postData.title);
+      setTags(postData.tags.join(", "));
+    } else {
+      setImageUrl("");
+      setText("");
+      setTitle("");
+      setTags("");
     }
-  }, []);
+  }, [postData]);
 
   const onCreatePost = async (event: React.ChangeEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    try {
-      const fields = {
-        title,
-        text,
-        tags: tags.split(", "),
-        imageUrl,
-      };
+    const fields: PostCreateType = {
+      id: paramsId,
+      title,
+      text,
+      tags: tags.split(", "),
+      imageUrl,
+    };
 
-      // const { data } = await axios.post("/posts", fields);
-      const { data } = isEditing
-        ? await axios.patch(`/posts/${paramsId}`, fields)
-        : await axios.post("/posts", fields);
+    // use catch error update back and here
+    const data = isEditing
+      ? await updatePost(fields).unwrap()
+      : await cratePost(fields)
+          .unwrap()
+          .catch(({ data }) => {
+            console.warn(data);
+            alert(data[0].msg);
+          });
 
-      const id = isEditing ? paramsId : data._id;
-      navigate(`/posts/${id}`);
-    } catch (error) {
-      console.warn(error);
-      alert("Unable to create article!");
-    }
+    const id = isEditing ? paramsId : data!._id;
+
+    navigate(`/posts/${id}`);
   };
 
   const handleChangeFile = async (
@@ -110,7 +115,7 @@ export const AddPost = () => {
     []
   );
 
-  if (!localStorage.getItem("token") && !isAuth) {
+  if (isError) {
     alert("You are not authorized! Please login to create an article.");
 
     return <Navigate to="/login" />;
@@ -123,7 +128,7 @@ export const AddPost = () => {
         size="large"
         onClick={() => inputFileRef.current?.click()}
       >
-        Загрузить превью
+        Upload an image to post
       </Button>
       <input
         ref={inputFileRef}
@@ -138,7 +143,7 @@ export const AddPost = () => {
             color="error"
             onClick={onClickRemoveImage}
           >
-            Удалить
+            Delete
           </Button>
           <img
             className={styles.image}
@@ -156,14 +161,14 @@ export const AddPost = () => {
           value={title}
           onChange={(event) => setTitle(event.target.value)}
           variant="standard"
-          placeholder="Заголовок статьи..."
+          placeholder="Article title..."
           fullWidth
         />
         <TextField
           value={tags}
           onChange={(event) => setTags(event.target.value)}
           variant="standard"
-          placeholder="Тэги"
+          placeholder="Tags"
           fullWidth
         />
         <SimpleMDE
@@ -177,7 +182,7 @@ export const AddPost = () => {
             {isEditing ? "Save" : "Publish"}
           </Button>
           <Link to="/">
-            <Button size="large">Отмена</Button>
+            <Button size="large">Cancel</Button>
           </Link>
         </div>
       </form>

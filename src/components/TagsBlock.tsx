@@ -10,10 +10,9 @@ import ListItemText from "@mui/material/ListItemText";
 import Skeleton from "@mui/material/Skeleton";
 
 import { SideBlock } from "./SideBlock";
-import { TagType } from "../redux/tags/types";
 
 type TagsBlockProps = {
-  items: TagType[];
+  items: string[];
   isLoading: boolean;
 };
 
@@ -22,7 +21,7 @@ export const TagsBlock: React.FC<TagsBlockProps> = ({
   isLoading = true,
 }) => {
   return (
-    <SideBlock title="Тэги">
+    <SideBlock title="Tags">
       <List>
         {(isLoading ? [...Array(5)] : items).map((name, i) => (
           <Link

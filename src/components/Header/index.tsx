@@ -4,13 +4,14 @@ import Container from "@mui/material/Container";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import styles from "./Header.module.scss";
-import { selectAuth } from "../../redux/auth/selectors";
-import { useAppDispatch, useAppSelector } from "../../redux/store";
-import { userLogout } from "../../redux/auth/slice";
-import { selectPosts } from "../../redux/posts/selectors";
+import { useAppDispatch } from "../../redux/store";
+import { userLogout } from "../../redux/user/slice";
+import { userApi } from "../../redux/services/UserService";
+import { postApi } from "../../redux/services/PostService";
 
-export const Header = () => {
-  const { isAuth } = useAppSelector(selectAuth);
+export const Header: React.FC = () => {
+  const { isSuccess } = userApi.useFetchUserQuery(null);
+  const { data } = postApi.useGetPostByIdQuery("", { skip: true });
   const dispatch = useAppDispatch();
   const location = useLocation();
   const navigate = useNavigate();
@@ -18,11 +19,20 @@ export const Header = () => {
   const onClickLogout = () => {
     if (window.confirm("Are you sure you want to logout?")) {
       dispatch(userLogout());
+
       localStorage.removeItem("token");
+
+      dispatch(userApi.util.resetApiState());
     }
 
     if (location.pathname === "/create-post") {
       navigate("/");
+    }
+  };
+
+  const onClearPostData = () => {
+    if (data) {
+      dispatch(postApi.util.resetApiState());
     }
   };
 
@@ -34,26 +44,28 @@ export const Header = () => {
             <div>MERN BLOG</div>
           </Link>
           <div className={styles.buttons}>
-            {isAuth ? (
+            {isSuccess ? (
               <>
                 <Link to="/create-post">
-                  <Button variant="contained">Написать статью</Button>
+                  <Button variant="contained" onClick={onClearPostData}>
+                    To write an article
+                  </Button>
                 </Link>
                 <Button
                   onClick={onClickLogout}
                   variant="contained"
                   color="error"
                 >
-                  Выйти
+                  Log out
                 </Button>
               </>
             ) : (
               <>
                 <Link to="/login">
-                  <Button variant="outlined">Войти</Button>
+                  <Button variant="outlined">Log in</Button>
                 </Link>
                 <Link to="/register">
-                  <Button variant="contained">Создать аккаунт</Button>
+                  <Button variant="contained">Create an account</Button>
                 </Link>
               </>
             )}

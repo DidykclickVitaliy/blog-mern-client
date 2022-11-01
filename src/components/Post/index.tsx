@@ -9,9 +9,8 @@ import CommentIcon from "@mui/icons-material/ChatBubbleOutlineOutlined";
 
 import styles from "./Post.module.scss";
 import { UserInfo } from "../UserInfo";
-import { UserType } from "../../redux/posts/types";
-import { useAppDispatch } from "../../redux/store";
-import { removePost } from "../../redux/posts/asyncAction";
+import { UserType } from "../../redux/services/types/postTypes";
+import { postApi } from "../../redux/services/PostService";
 
 type PostProps = {
   id: string;
@@ -40,12 +39,12 @@ export const Post: React.FC<PostProps> = ({
   isFullPost,
   isEditable,
 }) => {
-  const dispatch = useAppDispatch();
+  const [deletePost] = postApi.useDeletePostByIdMutation();
   const navigate = useNavigate();
 
   const onClickRemove = () => {
     if (window.confirm("Are you sure you want to delete this article?")) {
-      dispatch(removePost(id));
+      deletePost(id);
 
       navigate("/");
     }
