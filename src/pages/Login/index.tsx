@@ -9,7 +9,7 @@ import Button from "@mui/material/Button";
 import styles from "./Login.module.scss";
 import { useAppSelector } from "../../redux/store";
 import { userApi } from "../../redux/services/UserService";
-import { UserLoginType } from "../../redux/services/types/userTypes";
+import { UserLoginType } from "../../redux/services/types/user";
 import { selectUserData } from "../../redux/user/selectors";
 
 export const Login: React.FC = () => {

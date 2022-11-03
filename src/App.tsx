@@ -7,7 +7,6 @@ import { Home, FullPost, Registration, AddPost, Login } from "./pages";
 
 function App() {
   return (
-    // DZ 4:10:25,   return auth via axios
     <>
       <Header />
       <Container maxWidth="lg">

@@ -1,7 +1,7 @@
 import { createApi } from "@reduxjs/toolkit/dist/query/react";
 import { baseQuery } from "./middleware";
 
-import { UserLoginType, UserType } from "./types/userTypes";
+import { UserLoginType, UserType } from "./types/user";
 
 export const userApi = createApi({
   reducerPath: "userApi",
@@ -10,7 +10,7 @@ export const userApi = createApi({
   endpoints: (builder) => ({
     userLogin: builder.mutation<UserType, UserLoginType>({
       query: (credentials) => ({
-        url: "auth/login",
+        url: "api/auth/login",
         method: "POST",
         body: credentials,
       }),
@@ -18,7 +18,7 @@ export const userApi = createApi({
 
     userRegister: builder.mutation<UserType, UserLoginType>({
       query: (credentials) => ({
-        url: "auth/register",
+        url: "api/auth/register",
         method: "POST",
         body: credentials,
       }),
@@ -26,7 +26,7 @@ export const userApi = createApi({
 
     fetchUser: builder.query<UserType, null>({
       query: () => ({
-        url: "auth/me",
+        url: "api/auth/me",
         method: "GET",
       }),
       providesTags: (result) => ["Auth"],

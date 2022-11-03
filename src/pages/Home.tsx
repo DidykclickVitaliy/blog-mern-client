@@ -8,7 +8,7 @@ import { TagsBlock } from "../components/TagsBlock";
 import { CommentsBlock } from "../components/CommentsBlock";
 import { PostSkeleton } from "../components/Post/Skeleton";
 
-import { PostType } from "../redux/services/types/postTypes";
+import { PostType } from "../redux/services/types/post";
 import { postApi } from "../redux/services/PostService";
 import { userApi } from "../redux/services/UserService";
 

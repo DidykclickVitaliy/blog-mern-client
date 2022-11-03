@@ -42,16 +42,22 @@ export const Registration: React.FC = () => {
       .unwrap()
       .then((payload) => payload.token)
       .catch(({ data }) => {
+        if (data.message) {
+          return alert(data.message);
+        }
+
         console.warn(data);
         return alert(`Failed to register! ${data[0].msg} `);
       });
 
-    await userLogin({
-      email: values.email,
-      password: values.password,
-    });
+    if (token) {
+      await userLogin({
+        email: values.email,
+        password: values.password,
+      });
 
-    token && localStorage.setItem("token", token as string);
+      localStorage.setItem("token", token as string);
+    }
   };
 
   if (isAuth) {

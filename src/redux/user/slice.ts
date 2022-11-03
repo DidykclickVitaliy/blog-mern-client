@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { userApi } from "../services/UserService";
-import { UserSliceState } from "../services/types/userTypes";
+import { UserSliceState } from "../services/types/user";
 
 const initialState: UserSliceState = {
   isAuth: false,

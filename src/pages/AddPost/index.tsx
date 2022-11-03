@@ -9,7 +9,7 @@ import SimpleMDE, { SimpleMDEReactProps } from "react-simplemde-editor";
 import "easymde/dist/easymde.min.css";
 import styles from "./AddPost.module.scss";
 import axios from "../../middleware/axios";
-import { PostCreateType } from "../../redux/services/types/postTypes";
+import { PostCreateType } from "../../redux/services/types/post";
 import { postApi } from "../../redux/services/PostService";
 import { userApi } from "../../redux/services/UserService";
 
@@ -32,6 +32,7 @@ export const AddPost: React.FC = () => {
   const isEditing = Boolean(paramsId);
 
   React.useEffect(() => {
+    // Refresh state when going from update post to create
     if (paramsId && postData) {
       setImageUrl(postData.imageUrl);
       setText(postData.text);
@@ -56,9 +57,13 @@ export const AddPost: React.FC = () => {
       imageUrl,
     };
 
-    // use catch error update back and here
     const data = isEditing
-      ? await updatePost(fields).unwrap()
+      ? await updatePost(fields)
+          .unwrap()
+          .catch(({ data }) => {
+            console.warn(data);
+            alert(data[0].msg);
+          })
       : await cratePost(fields)
           .unwrap()
           .catch(({ data }) => {
@@ -80,7 +85,7 @@ export const AddPost: React.FC = () => {
 
       formData.append("image", file);
 
-      const { data } = await axios.post("/upload", formData);
+      const { data } = await axios.post("api/files/upload", formData);
 
       setImageUrl(data.url);
     } catch (error) {

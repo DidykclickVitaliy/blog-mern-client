@@ -9,7 +9,7 @@ import CommentIcon from "@mui/icons-material/ChatBubbleOutlineOutlined";
 
 import styles from "./Post.module.scss";
 import { UserInfo } from "../UserInfo";
-import { UserType } from "../../redux/services/types/postTypes";
+import { UserType } from "../../redux/services/types/post";
 import { postApi } from "../../redux/services/PostService";
 
 type PostProps = {

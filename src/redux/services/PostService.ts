@@ -1,7 +1,7 @@
 import { createApi } from "@reduxjs/toolkit/dist/query/react";
 import { baseQuery } from "./middleware";
 
-import { PostCreateType, PostType } from "./types/postTypes";
+import { PostCreateType, PostType } from "./types/post";
 
 export const postApi = createApi({
   reducerPath: "postApi",
@@ -10,7 +10,7 @@ export const postApi = createApi({
   endpoints: (builder) => ({
     fetchAllPosts: builder.query<PostType[], null>({
       query: () => ({
-        url: "posts",
+        url: "api/posts",
         method: "GET",
       }),
       providesTags: (result) => ["Posts"],
@@ -18,7 +18,7 @@ export const postApi = createApi({
 
     getPostById: builder.query<PostType, string>({
       query: (id: string) => ({
-        url: `posts/${id}`,
+        url: `api/posts/${id}`,
         method: "GET",
       }),
       providesTags: (result) => ["Posts"],
@@ -26,7 +26,7 @@ export const postApi = createApi({
 
     createPost: builder.mutation<PostType, PostCreateType>({
       query: (fields) => ({
-        url: "posts",
+        url: "api/posts",
         method: "POST",
         body: fields,
       }),
@@ -35,7 +35,7 @@ export const postApi = createApi({
 
     updatePost: builder.mutation<PostType, Partial<PostCreateType>>({
       query: ({ id, ...fields }) => ({
-        url: `posts/${id}`,
+        url: `api/posts/${id}`,
         method: "PATCH",
         body: fields,
       }),
@@ -44,7 +44,7 @@ export const postApi = createApi({
 
     deletePostById: builder.mutation<{ success: boolean; id: string }, string>({
       query: (id: string) => ({
-        url: `posts/${id}`,
+        url: `api/posts/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["Posts"],
@@ -52,7 +52,7 @@ export const postApi = createApi({
 
     fetchTags: builder.query<string[], null>({
       query: () => ({
-        url: "tags",
+        url: "api/posts/tags",
         method: "GET",
       }),
       providesTags: (result) => ["Posts"],
