@@ -10,7 +10,7 @@ type SideBlockProps = {
 
 export const SideBlock: React.FC<SideBlockProps> = ({ title, children }) => {
   return (
-    <Paper classes={{ root: styles.root }}>
+    <Paper classes={{ root: styles.root }} elevation={0}>
       <Typography variant="h6" classes={{ root: styles.title }}>
         {title}
       </Typography>

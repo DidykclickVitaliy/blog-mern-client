@@ -23,12 +23,13 @@ export const TagsBlock: React.FC<TagsBlockProps> = ({
   return (
     <SideBlock title="Tags">
       <List>
-        {(isLoading ? [...Array(5)] : items).map((name, i) => (
+        {(isLoading ? [...Array(5)] : items).map((name, index) => (
           <Link
+            key={index}
             style={{ textDecoration: "none", color: "black" }}
-            to={`/tags/${name}`}
+            to={`posts/tag/${name}`}
           >
-            <ListItem key={i} disablePadding>
+            <ListItem key={index + 1} disablePadding>
               <ListItemButton>
                 <ListItemIcon>
                   <TagIcon />

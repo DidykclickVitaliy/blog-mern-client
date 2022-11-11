@@ -11,8 +11,9 @@ import { useAppSelector } from "../../redux/store";
 import { userApi } from "../../redux/services/UserService";
 import { UserLoginType } from "../../redux/services/types/user";
 import { selectUserData } from "../../redux/user/selectors";
+import { LoadingContext } from "react-router-loading";
 
-export const Login: React.FC = () => {
+const Login: React.FC = () => {
   const [userLogin] = userApi.useUserLoginMutation();
 
   const {
@@ -103,3 +104,5 @@ export const Login: React.FC = () => {
     </Paper>
   );
 };
+
+export default Login;

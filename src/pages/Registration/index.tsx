@@ -1,4 +1,5 @@
 import React from "react";
+import { LoadingContext } from "react-router-loading";
 import { SubmitHandler, useForm } from "react-hook-form";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
@@ -18,10 +19,11 @@ type InputsType = {
   password: string;
 };
 
-export const Registration: React.FC = () => {
+const Registration: React.FC = () => {
   const [userRegister] = userApi.useUserRegisterMutation();
   const [userLogin] = userApi.useUserLoginMutation();
   const { isAuth } = useAppSelector(selectUserData);
+  const { done } = React.useContext(LoadingContext);
 
   const {
     register,
@@ -36,6 +38,10 @@ export const Registration: React.FC = () => {
     },
     mode: "all",
   });
+
+  React.useEffect(() => {
+    done();
+  }, []);
 
   const onSubmit: SubmitHandler<InputsType> = async (values) => {
     const token: string | void = await userRegister(values)
@@ -142,3 +148,5 @@ export const Registration: React.FC = () => {
     </Paper>
   );
 };
+
+export default Registration;

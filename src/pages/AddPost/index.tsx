@@ -13,7 +13,7 @@ import { PostCreateType } from "../../redux/services/types/post";
 import { postApi } from "../../redux/services/PostService";
 import { userApi } from "../../redux/services/UserService";
 
-export const AddPost: React.FC = () => {
+const AddPost: React.FC = () => {
   const { id: paramsId } = useParams();
   const navigate = useNavigate();
 
@@ -194,3 +194,5 @@ export const AddPost: React.FC = () => {
     </Paper>
   );
 };
+
+export default AddPost;

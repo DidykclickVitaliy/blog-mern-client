@@ -8,9 +8,10 @@ import ListItemText from "@mui/material/ListItemText";
 import Divider from "@mui/material/Divider";
 import List from "@mui/material/List";
 import Skeleton from "@mui/material/Skeleton";
+import { CommentType } from "../redux/services/types/post";
 
 type CommentsBlockProps = {
-  items: object[];
+  items: CommentType[];
   children?: React.ReactNode;
   isLoading: boolean;
 };
@@ -23,7 +24,7 @@ export const CommentsBlock: React.FC<CommentsBlockProps> = ({
   return (
     <SideBlock title="Comments">
       <List>
-        {(isLoading ? [...Array(5)] : items).map((obj, index) => (
+        {(isLoading ? [...Array(5)] : items).map((obj: CommentType, index) => (
           <React.Fragment key={index}>
             <ListItem alignItems="flex-start">
               <ListItemAvatar>

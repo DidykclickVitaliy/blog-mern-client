@@ -2,6 +2,7 @@ import React from "react";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Grid from "@mui/material/Grid";
+import { motion } from "framer-motion";
 
 import { Post } from "../components/Post";
 import { TagsBlock } from "../components/TagsBlock";
@@ -13,76 +14,75 @@ import { postApi } from "../redux/services/PostService";
 import { userApi } from "../redux/services/UserService";
 
 export const Home: React.FC = () => {
-  const { data: posts, isLoading: postsLoading } =
-    postApi.useFetchAllPostsQuery(null, {
-      refetchOnMountOrArgChange: true,
-    });
-
+  const {
+    data: posts,
+    isLoading: postsLoading,
+    isSuccess,
+  } = postApi.useGetAllPostsQuery(null, { refetchOnMountOrArgChange: true });
   const { data: tags, isLoading: tagsLoading } = postApi.useFetchTagsQuery(
     null,
-    {
-      refetchOnMountOrArgChange: true,
-    }
+    { refetchOnMountOrArgChange: true }
   );
+  const { data: comments } = postApi.useGetLastCommentsQuery(null);
   const { data: userData } = userApi.useFetchUserQuery(null);
 
+  const [tabValue, setTabValue] = React.useState<number>(0);
+
+  const sortedPosts =
+    tabValue && posts
+      ? posts.slice().sort((a, b) => b.viewsCount - a.viewsCount)
+      : posts;
+
+  const onSortPosts = (tabValue: number) => {
+    setTabValue(tabValue);
+  };
+
   return (
-    <>
+    <motion.div
+      initial={{ width: 0 }}
+      animate={{ width: "100%" }}
+      exit={{ x: window.innerWidth, transition: { duration: 0.1 } }}
+    >
       <Tabs
         style={{ marginBottom: 15 }}
-        value={0}
+        value={tabValue}
+        textColor="secondary"
+        indicatorColor="secondary"
         aria-label="basic tabs example"
       >
-        <Tab label="New" />
-        <Tab label="Popular" />
+        <Tab label="New" onClick={() => onSortPosts(0)} />
+        <Tab label="Popular" onClick={() => onSortPosts(1)} />
       </Tabs>
       <Grid container spacing={4}>
         <Grid xs={8} item>
-          {(!posts ? [...Array(5)] : posts).map((post: PostType, index) =>
-            postsLoading ? (
-              <PostSkeleton key={index} />
-            ) : (
-              <Post
-                key={post._id}
-                id={post._id}
-                title={post.title}
-                imageUrl={
-                  post.imageUrl ? `http://localhost:4444${post.imageUrl}` : ""
-                }
-                user={post.user}
-                createdAt={post.createdAt}
-                viewsCount={post.viewsCount}
-                commentsCount={3}
-                tags={post.tags}
-                isEditable={userData?._id === post.user._id}
-                isFullPost={false}
-              />
-            )
+          {(!posts ? [...Array(5)] : sortedPosts!).map(
+            (post: PostType, index) =>
+              postsLoading ? (
+                <PostSkeleton key={index} />
+              ) : (
+                <Post
+                  key={post._id}
+                  id={post._id}
+                  title={post.title}
+                  imageUrl={
+                    post.imageUrl ? `http://localhost:4444${post.imageUrl}` : ""
+                  }
+                  user={post.user}
+                  createdAt={post.createdAt}
+                  viewsCount={post.viewsCount}
+                  commentsCount={3}
+                  tags={post.tags}
+                  isEditable={userData?._id === post.user._id}
+                  isFullPost={false}
+                />
+              )
           )}
         </Grid>
         <Grid xs={4} item>
           <TagsBlock items={tags ? tags : []} isLoading={tagsLoading} />
-          <CommentsBlock
-            items={[
-              {
-                user: {
-                  fullName: "Вася Пупкин",
-                  avatarUrl: "https://mui.com/static/images/avatar/1.jpg",
-                },
-                text: "Это тестовый комментарий",
-              },
-              {
-                user: {
-                  fullName: "Иван Иванов",
-                  avatarUrl: "https://mui.com/static/images/avatar/2.jpg",
-                },
-                text: "When displaying three lines or more, the avatar is not aligned at the top. You should set the prop to align the avatar at the top",
-              },
-            ]}
-            isLoading={false}
-          />
+          <CommentsBlock items={comments ? comments : []} isLoading={false} />
         </Grid>
       </Grid>
-    </>
+    </motion.div>
   );
 };
