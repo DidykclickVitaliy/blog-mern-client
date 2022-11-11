@@ -1,27 +1,10 @@
-import React from "react";
-import { Route, Routes } from "react-router-dom";
-import Container from "@mui/material/Container";
+// heroku + versel
 
-import { Header } from "./components";
-import { Home, FullPost, Registration, AddPost, Login } from "./pages";
+import { AppRoutes } from "./routes/AnimatedRoutes";
 
+// "https://mui.com/static/images/avatar/1.jpg
 function App() {
-  return (
-    <>
-      <Header />
-      <Container maxWidth="lg">
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/posts/:id" element={<FullPost />} />
-          <Route path="/posts/:id/edit" element={<AddPost />} />
-          <Route path="/create-post" element={<AddPost />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Registration />} />
-          {/* <Route path="*" element={<NotFound/>}/> */}
-        </Routes>
-      </Container>
-    </>
-  );
+  return <AppRoutes />;
 }
 
 export default App;
