@@ -19,5 +19,5 @@
 - **Material UI**
 - **CSS-Modules / SCSS**
 - **React Content Loader**
-- **Code Splitting, React Loadable**
+- **Code Splitting, Lazy Loading**
  
