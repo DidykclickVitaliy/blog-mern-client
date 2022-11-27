@@ -13,7 +13,11 @@
 - **React Hooks** 
 - **React Hook Form** 
 - **Prettier**  
+- **clsx** 
+- **React SimpleMD** 
+- **framer motion** 
 - **Material UI**
 - **CSS-Modules / SCSS**
 - **React Content Loader**
 - **Code Splitting, React Loadable**
+ 
