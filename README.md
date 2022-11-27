@@ -12,7 +12,8 @@
 - **React Router v6** 
 - **React Hooks** 
 - **React Hook Form** 
-- **Prettier** 
+- **Prettier**  
+- **Material UI*
 - **CSS-Modules / SCSS**
 - **React Content Loader**
 - **Code Splitting, React Loadable**
