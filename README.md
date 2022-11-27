@@ -13,7 +13,7 @@
 - **React Hooks** 
 - **React Hook Form** 
 - **Prettier**  
-- **Material UI*
+- **Material UI**
 - **CSS-Modules / SCSS**
 - **React Content Loader**
 - **Code Splitting, React Loadable**
