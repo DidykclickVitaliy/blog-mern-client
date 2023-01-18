@@ -4,7 +4,7 @@ import Grid from "@mui/material/Grid";
 
 import { postApi } from "../redux/services/PostService";
 import { useParams } from "react-router-dom";
-import { PostType } from "../redux/services/types/post";
+import { IPost } from "../redux/services/types/post";
 import { PostSkeleton } from "../components/Post/Skeleton";
 import { Post } from "../components";
 import { userApi } from "../redux/services/UserService";
@@ -23,7 +23,7 @@ const PostsByTag: React.FC = () => {
       </h1>
       <Grid container spacing={4}>
         <Grid xs={8} item>
-          {(!posts ? [...Array(5)] : posts).map((post: PostType, index) =>
+          {(!posts ? [...Array(5)] : posts).map((post: IPost, index) =>
             isLoading ? (
               <PostSkeleton key={index} />
             ) : (

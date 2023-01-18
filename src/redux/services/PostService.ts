@@ -3,9 +3,9 @@ import { createApi } from "@reduxjs/toolkit/dist/query/react";
 import { baseQuery } from "./middleware";
 import {
   CommentCreateType,
-  CommentType,
+  IComment,
   PostCreateType,
-  PostType,
+  IPost,
 } from "./types/post";
 
 export const postApi = createApi({
@@ -13,7 +13,7 @@ export const postApi = createApi({
   baseQuery,
   tagTypes: ["Posts", "Post"],
   endpoints: (builder) => ({
-    getAllPosts: builder.query<PostType[], null>({
+    getAllPosts: builder.query<IPost[], null>({
       query: () => ({
         url: "api/posts",
         method: "GET",
@@ -21,7 +21,7 @@ export const postApi = createApi({
       providesTags: (result) => ["Posts"],
     }),
 
-    getPostById: builder.query<PostType, string>({
+    getPostById: builder.query<IPost, string>({
       query: (id: string) => ({
         url: `api/posts/${id}`,
         method: "GET",
@@ -29,14 +29,14 @@ export const postApi = createApi({
       providesTags: (result) => ["Post"],
     }),
 
-    getPostsByTag: builder.query<PostType[], string>({
+    getPostsByTag: builder.query<IPost[], string>({
       query: (tag: string) => ({
         url: `api/posts/tags/${tag}`,
         method: "GET",
       }),
       providesTags: (result) => ["Posts"],
     }),
-    createPost: builder.mutation<PostType, PostCreateType>({
+    createPost: builder.mutation<IPost, PostCreateType>({
       query: (fields) => ({
         url: "api/posts",
         method: "POST",
@@ -45,7 +45,7 @@ export const postApi = createApi({
       invalidatesTags: ["Posts"],
     }),
 
-    updatePost: builder.mutation<PostType, Partial<PostCreateType>>({
+    updatePost: builder.mutation<IPost, Partial<PostCreateType>>({
       query: ({ id, ...fields }) => ({
         url: `api/posts/${id}`,
         method: "PATCH",
@@ -79,7 +79,7 @@ export const postApi = createApi({
       invalidatesTags: ["Post"],
     }),
 
-    getLastComments: builder.query<CommentType[], null>({
+    getLastComments: builder.query<IComment[], null>({
       query: () => ({
         url: "api/posts/comments",
         method: "GET",
