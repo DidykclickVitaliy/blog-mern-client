@@ -14,5 +14,4 @@ export type UserType = {
 
 export interface UserSliceState {
   isAuth: boolean;
-  token: string | null;
 }

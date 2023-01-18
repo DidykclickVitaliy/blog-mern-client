@@ -5,7 +5,6 @@ import { UserSliceState } from "../services/types/user";
 
 const initialState: UserSliceState = {
   isAuth: false,
-  token: "",
 };
 
 const userSlice = createSlice({
@@ -14,17 +13,14 @@ const userSlice = createSlice({
   reducers: {
     userLogout(state) {
       state.isAuth = false;
-      state.token = "";
     },
   },
   extraReducers: (builder) => {
     builder.addMatcher(userApi.endpoints.userLogin.matchFulfilled, (state) => {
       state.isAuth = true;
-      state.token = localStorage.getItem("token");
     });
     builder.addMatcher(userApi.endpoints.fetchUser.matchFulfilled, (state) => {
       state.isAuth = true;
-      state.token = localStorage.getItem("token");
     });
   },
 });
