@@ -20,7 +20,7 @@ export type CommentCreateType = {
   text: string;
 };
 
-export interface CommentType {
+export interface IComment {
   _id: string;
   user: UserType;
   updatedAt: string;
@@ -29,9 +29,9 @@ export interface CommentType {
   text: string;
 }
 
-export interface PostType {
+export interface IPost {
   _id: string;
-  comments: CommentType[];
+  comments: IComment[];
   title: string;
   text: string;
   tags: string[];

@@ -9,7 +9,7 @@ import { TagsBlock } from "../components/TagsBlock";
 import { CommentsBlock } from "../components/CommentsBlock";
 import { PostSkeleton } from "../components/Post/Skeleton";
 
-import { PostType } from "../redux/services/types/post";
+import { IPost } from "../redux/services/types/post";
 import { postApi } from "../redux/services/PostService";
 import { userApi } from "../redux/services/UserService";
 
@@ -56,7 +56,7 @@ export const Home: React.FC = () => {
       <Grid container spacing={4}>
         <Grid xs={8} item>
           {(!posts ? [...Array(5)] : sortedPosts!).map(
-            (post: PostType, index) =>
+            (post: IPost, index: number) =>
               postsLoading ? (
                 <PostSkeleton key={index} />
               ) : (
