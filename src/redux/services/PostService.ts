@@ -62,7 +62,7 @@ export const postApi = createApi({
       invalidatesTags: ["Posts"],
     }),
 
-    fetchTags: builder.query<string[], null>({
+    getTags: builder.query<string[], null>({
       query: () => ({
         url: "api/posts/tags",
         method: "GET",

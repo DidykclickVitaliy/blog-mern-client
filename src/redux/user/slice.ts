@@ -19,7 +19,7 @@ const userSlice = createSlice({
     builder.addMatcher(userApi.endpoints.userLogin.matchFulfilled, (state) => {
       state.isAuth = true;
     });
-    builder.addMatcher(userApi.endpoints.fetchUser.matchFulfilled, (state) => {
+    builder.addMatcher(userApi.endpoints.getUser.matchFulfilled, (state) => {
       state.isAuth = true;
     });
   },

@@ -19,12 +19,11 @@ export const Home: React.FC = () => {
     isLoading: postsLoading,
     isSuccess,
   } = postApi.useGetAllPostsQuery(null, { refetchOnMountOrArgChange: true });
-  const { data: tags, isLoading: tagsLoading } = postApi.useFetchTagsQuery(
-    null,
-    { refetchOnMountOrArgChange: true }
-  );
+  const { data: tags, isLoading: tagsLoading } = postApi.useGetTagsQuery(null, {
+    refetchOnMountOrArgChange: true,
+  });
   const { data: comments } = postApi.useGetLastCommentsQuery(null);
-  const { data: userData } = userApi.useFetchUserQuery(null);
+  const { data: userData } = userApi.useGetUserQuery(null);
 
   const [tabValue, setTabValue] = React.useState<number>(0);
 
