@@ -24,7 +24,7 @@ export const userApi = createApi({
       }),
     }),
 
-    fetchUser: builder.query<UserType, null>({
+    getUser: builder.query<UserType, null>({
       query: () => ({
         url: "api/auth/me",
         method: "GET",

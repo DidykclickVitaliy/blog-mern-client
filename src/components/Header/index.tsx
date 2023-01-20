@@ -10,7 +10,7 @@ import { userApi } from "../../redux/services/UserService";
 import { postApi } from "../../redux/services/PostService";
 
 export const Header: React.FC = () => {
-  const { isSuccess } = userApi.useFetchUserQuery(null);
+  const { isSuccess } = userApi.useGetUserQuery(null);
   const { data } = postApi.useGetPostByIdQuery("", { skip: true });
   const dispatch = useAppDispatch();
   const location = useLocation();

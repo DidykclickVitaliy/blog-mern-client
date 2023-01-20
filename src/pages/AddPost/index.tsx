@@ -17,7 +17,7 @@ const AddPost: React.FC = () => {
   const { id: paramsId } = useParams();
   const navigate = useNavigate();
 
-  const { isError } = userApi.useFetchUserQuery(null);
+  const { isError } = userApi.useGetUserQuery(null);
   const { currentData: postData } = postApi.useGetPostByIdQuery(
     paramsId ?? skipToken
   );

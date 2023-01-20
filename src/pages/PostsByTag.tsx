@@ -14,7 +14,7 @@ const PostsByTag: React.FC = () => {
   const { data: posts, isLoading } = postApi.useGetPostsByTagQuery(
     tag ?? skipToken
   );
-  const { data: userData } = userApi.useFetchUserQuery(null);
+  const { data: userData } = userApi.useGetUserQuery(null);
 
   return (
     <div>

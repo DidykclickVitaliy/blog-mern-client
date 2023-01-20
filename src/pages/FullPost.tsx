@@ -15,7 +15,7 @@ const FullPost: React.FC = () => {
   const navigate = useNavigate();
   const { data, isLoading, error, isError, isSuccess } =
     postApi.useGetPostByIdQuery(`${id}`);
-  const { data: userData } = userApi.useFetchUserQuery(null);
+  const { data: userData } = userApi.useGetUserQuery(null);
 
   if (isError) {
     alert("Cannot get article");
